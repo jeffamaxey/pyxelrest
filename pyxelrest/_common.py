@@ -35,9 +35,8 @@ def convert_environment_variable(value: str) -> str:
     """
     Value can be an environment variable formatted as %MY_ENV_VARIABLE%
     """
-    environment_variables_match = re.match("^%(.*)%$", value)
-    if environment_variables_match:
-        environment_variable = environment_variables_match.group(1)
+    if environment_variables_match := re.match("^%(.*)%$", value):
+        environment_variable = environment_variables_match[1]
         return os.environ[environment_variable]
     return value
 
@@ -72,10 +71,10 @@ class ConfigSection:
             self.auth["api_key"] = convert_environment_variable(self.auth["api_key"])
 
     def ensure_unique_function_names(self) -> bool:
-        for formula_options in self.formulas.values():
-            if "{name}" not in formula_options["prefix"]:
-                return False
-        return True
+        return all(
+            "{name}" in formula_options["prefix"]
+            for formula_options in self.formulas.values()
+        )
 
     def udf_prefix(self, formula_options: dict) -> str:
         return formula_options["prefix"].format(name=to_valid_python_vba(self.name))
@@ -142,9 +141,9 @@ class UDFMethod(ABC):
         self.requests_method = http_method
         self.uri = f"{service.uri}{path}"
         self.udf_name = udf_name
-        self.auto_expand_result = "legacy_array" == formula_type
+        self.auto_expand_result = formula_type == "legacy_array"
         self.is_asynchronous = (
-            "vba_compatible" != formula_type
+            formula_type != "vba_compatible"
             and not formula_options.get("lock_excel", False)
         )
         self.raise_exception = bool(formula_options.get("raise_exception", False))
@@ -216,7 +215,7 @@ class UDFMethod(ABC):
         if self.cache is None:
             return
         # Results are only cached on GET requests
-        if "get" != self.requests_method:
+        if self.requests_method != "get":
             return
 
         request_id = request_content.unique_id()
@@ -267,7 +266,7 @@ class UDFMethod(ABC):
         return self.security(request_content) or self.service.config.auth.get("ntlm")
 
     def to_list(self, response: requests.Response) -> list:
-        if 202 == response.status_code:
+        if response.status_code == 202:
             return [["Status URL"], [response.headers["location"]]]
         elif response.headers["content-type"] == "application/json":
             json_data = response.json() if len(response.content) else ""
@@ -347,11 +346,10 @@ class RequestContent:
     def _add_body_parameter(self, parameter: UDFParameter, value: Any) -> None:
         if parameter.schema.get("type") == "array":
             self._add_body_list_parameter(parameter, value)
+        elif parameter.server_param_name:
+            self.payload[parameter.server_param_name] = value
         else:
-            if parameter.server_param_name:
-                self.payload[parameter.server_param_name] = value
-            else:
-                self.payload = value
+            self.payload = value
 
     def _add_body_list_parameter(self, parameter: UDFParameter, value: list) -> None:
         # Change the default payload to list
@@ -428,8 +426,7 @@ def check_for_duplicates(loaded_services: List[Service]) -> None:
             sections_by_prefix.setdefault(
                 service.config.udf_prefix(formula_options), []
             ).append(service.config.name)
-    for prefix in sections_by_prefix:
-        section_names = sections_by_prefix[prefix]
+    for prefix, section_names in sections_by_prefix.items():
         if len(section_names) > 1:
             logger.warning(
                 f'{section_names} services will use the same "{prefix}" prefix. In case there is the same call available, '
@@ -475,9 +472,9 @@ def get_result(
         )
         response.raise_for_status()
 
-        # Wait for a specific status if needed
-        wait_for_status = request_content.extra_parameters.get("wait_for_status")
-        if wait_for_status:
+        if wait_for_status := request_content.extra_parameters.get(
+            "wait_for_status"
+        ):
             if not response.history or (
                 response.history[0].status_code != wait_for_status
             ):
@@ -528,10 +525,11 @@ def get_caller_address(caller: ComRange, excel_application=None) -> str:
         if not caller:
             return ""
 
-        if not hasattr(caller, "Rows"):
-            return f"VBA:{excel_application.VBE.ActiveCodePane.CodeModule}"
-
-        return str(caller.get_address())
+        return (
+            str(caller.get_address())
+            if hasattr(caller, "Rows")
+            else f"VBA:{excel_application.VBE.ActiveCodePane.CodeModule}"
+        )
     except:
         logger.exception("Unable to retrieve caller address.")
         return ""

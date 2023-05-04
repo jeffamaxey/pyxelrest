@@ -87,11 +87,7 @@ class RESTAPIConfigSection(ConfigSection):
                     return False
 
         if self.selected_tags:
-            for method_tag in method_tags:
-                if method_tag in self.selected_tags:
-                    return True
-            return False
-
+            return any(method_tag in self.selected_tags for method_tag in method_tags)
         return True
 
     def _allow_operation_id(self, method_operation_id: Optional[str]) -> bool:
@@ -185,10 +181,9 @@ class APIUDFParameter(UDFParameter):
         # Apply to arrays
         self.collection_format = open_api_parameter.get("collectionFormat")
 
-        open_api_array_parameter = self._get_open_api_array_parameter(
+        if open_api_array_parameter := self._get_open_api_array_parameter(
             open_api_parameter
-        )
-        if open_api_array_parameter:
+        ):
             if open_api_array_parameter.get("type") == "object" or (
                 "$ref" in open_api_array_parameter
             ):
@@ -213,7 +208,7 @@ class APIUDFParameter(UDFParameter):
     def _get_open_api_array_parameter(self, open_api_parameter: dict) -> Optional[dict]:
         if self.type == "array":
             open_api_array_parameter = dict(open_api_parameter)
-            open_api_array_parameter.update(open_api_parameter["items"])
+            open_api_array_parameter |= open_api_parameter["items"]
             return open_api_array_parameter
         elif self.schema.get("type") == "array":
             open_api_array_parameter = dict(open_api_parameter)
@@ -237,17 +232,16 @@ class APIUDFParameter(UDFParameter):
         return value
 
     def _check_number(self, value: Union[int, float]):
-        if self.maximum is not None:
-            if self.exclusive_maximum:
-                if value >= self.maximum:
-                    raise Exception(
-                        f'{self.name} value "{value}" must be strictly inferior to {self.maximum}.'
-                    )
-            else:
-                if value > self.maximum:
-                    raise Exception(
-                        f'{self.name} value "{value}" must be inferior or equals to {self.maximum}.'
-                    )
+        if self.exclusive_maximum:
+            if self.maximum is not None and value >= self.maximum:
+                raise Exception(
+                    f'{self.name} value "{value}" must be strictly inferior to {self.maximum}.'
+                )
+        elif value > self.maximum:
+            if self.maximum is not None:
+                raise Exception(
+                    f'{self.name} value "{value}" must be inferior or equals to {self.maximum}.'
+                )
 
         if self.minimum is not None:
             if self.exclusive_minimum:
@@ -255,11 +249,10 @@ class APIUDFParameter(UDFParameter):
                     raise Exception(
                         f'{self.name} value "{value}" must be strictly superior to {self.minimum}.'
                     )
-            else:
-                if value < self.minimum:
-                    raise Exception(
-                        f'{self.name} value "{value}" must be superior or equals to {self.minimum}.'
-                    )
+            elif value < self.minimum:
+                raise Exception(
+                    f'{self.name} value "{value}" must be superior or equals to {self.minimum}.'
+                )
 
         if self.multiple_of and (value % self.multiple_of) != 0:
             raise Exception(
@@ -291,10 +284,7 @@ class APIUDFParameter(UDFParameter):
             value = str(value)
         if isinstance(value, float):
             # Send float values without decimal as int string values
-            if value == float(int(value)):
-                value = str(int(value))
-            else:
-                value = str(value)
+            value = str(int(value)) if value == float(int(value)) else str(value)
         self._check_choices(value)
         if self.max_length is not None and len(value) > self.max_length:
             raise Exception(
@@ -366,16 +356,16 @@ class APIUDFParameter(UDFParameter):
         ]
 
     def _apply_collection_format(self, list_value: list) -> Union[str, list]:
-        if not self.collection_format or "csv" == self.collection_format:
+        if not self.collection_format or self.collection_format == "csv":
             return ",".join([str(value) for value in list_value])
-        if "multi" == self.collection_format:
+        if self.collection_format == "multi":
             # requests module will send one parameter per item in list
             return list_value
-        if "ssv" == self.collection_format:
+        if self.collection_format == "ssv":
             return " ".join([str(value) for value in list_value])
-        if "tsv" == self.collection_format:
+        if self.collection_format == "tsv":
             return "\t".join([str(value) for value in list_value])
-        if "pipes" == self.collection_format:
+        if self.collection_format == "pipes":
             return "|".join([str(value) for value in list_value])
         raise Exception(f"Collection format {self.collection_format} is invalid.")
 
@@ -548,7 +538,7 @@ class OpenAPIUDFMethod(UDFMethod):
         if "application/json" in self.open_api_method["produces"]:
             header["Accept"] = "application/json"
 
-        header.update(self.service.config.custom_headers)
+        header |= self.service.config.custom_headers
 
         return header
 
@@ -560,12 +550,11 @@ class OpenAPIUDFMethod(UDFMethod):
 
         schema = open_api_parameter["schema"]
         parameters = []
-        open_api_definition = self._get_definition(schema)
-        if open_api_definition:
+        if open_api_definition := self._get_definition(schema):
             # This usually means a primitive type
             if "properties" not in open_api_definition:
                 inner_parameter = dict(open_api_parameter)
-                inner_parameter.update(open_api_definition)
+                inner_parameter |= open_api_definition
                 # Indicate that this is the whole body
                 inner_parameter["server_param_name"] = None
                 parameters.append(APIUDFParameter(inner_parameter, schema))
@@ -587,7 +576,7 @@ class OpenAPIUDFMethod(UDFMethod):
                         parameters.append(APIUDFParameter(inner_parameter, schema))
         elif "items" in schema:
             inner_parameter = dict(open_api_parameter)
-            inner_parameter.update(schema["items"])
+            inner_parameter |= schema["items"]
             # Indicate that this is the whole body
             inner_parameter["server_param_name"] = None
             parameters.append(APIUDFParameter(inner_parameter, schema))
@@ -601,9 +590,7 @@ class OpenAPIUDFMethod(UDFMethod):
             return self.service.open_api_definitions.get(ref, {})
         if "items" in schema:
             return self._get_definition(schema["items"])
-        if "properties" in schema:
-            return schema
-        return {}
+        return schema if "properties" in schema else {}
 
     def _avoid_duplicated_names(self, udf_parameters: List[UDFParameter]):
         parameters_by_name = {}
@@ -613,10 +600,7 @@ class OpenAPIUDFMethod(UDFMethod):
             if len(parameters) > 1:
                 for parameter in parameters:
                     # Keep original name for body and form as they make the more sense for those location
-                    if (
-                        parameter.location != "body"
-                        and parameter.location != "formData"
-                    ):
+                    if parameter.location not in ["body", "formData"]:
                         parameter.name = f"{parameter.location}_{parameter.name}"
         # Ensure that names are not duplicated anymore
         if len(parameters_by_name) != len(udf_parameters):
@@ -648,16 +632,11 @@ class OpenAPI(Service):
         Service.__init__(self, config, uri)
 
     def _scheme(self, config: RESTAPIConfigSection) -> str:
-        # Prefer HTTPS if available in OpenAPI definition
-        schemes = self.open_api_definition.get("schemes")
-        if schemes:
+        if schemes := self.open_api_definition.get("schemes"):
             return "https" if "https" in schemes else schemes[0]
 
-        # Allow user to provide scheme thanks to host network property
-        user_provided_host = config.network.get("host")
-        if user_provided_host:
-            scheme = urlsplit(user_provided_host).scheme
-            if scheme:
+        if user_provided_host := config.network.get("host"):
+            if scheme := urlsplit(user_provided_host).scheme:
                 return scheme
 
         # The default scheme to be used is the one used to access the OpenAPI definition itself.
@@ -669,13 +648,10 @@ class OpenAPI(Service):
         )
 
     def _host(self, config: RESTAPIConfigSection) -> str:
-        host = self.open_api_definition.get("host")
-        if host:
+        if host := self.open_api_definition.get("host"):
             return host
 
-        # Allow user to provide host thanks to host network property
-        user_provided_host = config.network.get("host")
-        if user_provided_host:
+        if user_provided_host := config.network.get("host"):
             # Ensure scheme is not part of host even if provided
             host_parsed = urlsplit(user_provided_host)
             return host_parsed.netloc + host_parsed.path

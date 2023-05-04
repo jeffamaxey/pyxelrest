@@ -3081,7 +3081,7 @@ def test_mandatory_array_integer_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3129,7 +3129,7 @@ def test_mandatory_array_integer_parameter_provided_as_empty_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3177,7 +3177,7 @@ def test_mandatory_array_integer_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3223,7 +3223,7 @@ def test_mandatory_array_integer_parameter_with_wrong_type(json_service, tmpdir)
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -3270,7 +3270,7 @@ def test_mandatory_array_integer_parameter_with_wrong_type_in_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -3458,7 +3458,7 @@ def test_mandatory_array_integer32_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3506,7 +3506,7 @@ def test_mandatory_array_integer32_parameter_provided_as_empty_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3554,7 +3554,7 @@ def test_mandatory_array_integer32_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3600,7 +3600,7 @@ def test_mandatory_array_integer32_parameter_with_wrong_type(json_service, tmpdi
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -3647,7 +3647,7 @@ def test_mandatory_array_integer32_parameter_with_wrong_type_in_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -3835,7 +3835,7 @@ def test_mandatory_array_integer64_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3883,7 +3883,7 @@ def test_mandatory_array_integer64_parameter_provided_as_empty_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3931,7 +3931,7 @@ def test_mandatory_array_integer64_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -3977,7 +3977,7 @@ def test_mandatory_array_integer64_parameter_with_wrong_type(json_service, tmpdi
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -4024,7 +4024,7 @@ def test_mandatory_array_integer64_parameter_with_wrong_type_in_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -4211,7 +4211,7 @@ def test_mandatory_array_number_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -4257,7 +4257,7 @@ def test_mandatory_array_number_parameter_provided_as_empty_array(json_service, 
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -4305,7 +4305,7 @@ def test_mandatory_array_number_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -4351,7 +4351,7 @@ def test_mandatory_array_number_parameter_with_wrong_type(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -4398,7 +4398,7 @@ def test_mandatory_array_number_parameter_with_wrong_type_in_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -4583,7 +4583,7 @@ def test_mandatory_array_float_number_parameter_not_provided(json_service, tmpdi
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -4629,7 +4629,7 @@ def test_mandatory_array_float_parameter_provided_as_empty_array(json_service, t
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -4677,7 +4677,7 @@ def test_mandatory_array_float_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -4723,7 +4723,7 @@ def test_mandatory_array_float_parameter_with_wrong_type(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -4768,7 +4768,7 @@ def test_mandatory_array_float_parameter_with_wrong_type_in_array(json_service, 
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -4953,7 +4953,7 @@ def test_mandatory_array_double_number_parameter_not_provided(json_service, tmpd
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -4999,7 +4999,7 @@ def test_mandatory_array_double_parameter_provided_as_empty_array(json_service, 
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5047,7 +5047,7 @@ def test_mandatory_array_double_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5093,7 +5093,7 @@ def test_mandatory_array_double_parameter_with_wrong_type(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -5140,7 +5140,7 @@ def test_mandatory_array_double_parameter_with_wrong_type_in_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -5353,7 +5353,7 @@ def test_mandatory_array_string_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5399,7 +5399,7 @@ def test_mandatory_array_string_parameter_provided_as_empty_array(json_service, 
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5447,7 +5447,7 @@ def test_mandatory_array_string_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5627,7 +5627,7 @@ def test_mandatory_array_string_byte_parameter_not_provided(json_service, tmpdir
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5675,7 +5675,7 @@ def test_mandatory_array_string_byte_parameter_provided_as_empty_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5723,7 +5723,7 @@ def test_mandatory_array_string_byte_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5905,7 +5905,7 @@ def test_mandatory_array_string_binary_parameter_not_provided(json_service, tmpd
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -5953,7 +5953,7 @@ def test_mandatory_array_string_binary_parameter_provided_as_empty_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6001,7 +6001,7 @@ def test_mandatory_array_string_binary_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6153,7 +6153,7 @@ def test_mandatory_array_boolean_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6201,7 +6201,7 @@ def test_mandatory_array_boolean_parameter_provided_as_empty_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6249,7 +6249,7 @@ def test_mandatory_array_boolean_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6295,7 +6295,7 @@ def test_mandatory_array_boolean_parameter_with_wrong_type(json_service, tmpdir)
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -6342,7 +6342,7 @@ def test_mandatory_array_boolean_parameter_with_wrong_type_in_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -6529,7 +6529,7 @@ def test_mandatory_array_date_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6575,7 +6575,7 @@ def test_mandatory_array_date_parameter_provided_as_empty_array(json_service, tm
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6623,7 +6623,7 @@ def test_mandatory_array_date_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6669,7 +6669,7 @@ def test_mandatory_array_date_parameter_with_wrong_type(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6715,7 +6715,7 @@ def test_mandatory_array_date_parameter_with_wrong_type_in_array(json_service, t
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6900,7 +6900,7 @@ def test_mandatory_array_date_time_parameter_not_provided(json_service, tmpdir):
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6948,7 +6948,7 @@ def test_mandatory_array_date_time_parameter_provided_as_empty_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -6996,7 +6996,7 @@ def test_mandatory_array_date_time_parameter_provided_as_none_filled_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert (
         generated_functions.json_get_all_parameters_types(
             query_integer=0,
@@ -7042,7 +7042,7 @@ def test_mandatory_array_date_time_parameter_with_wrong_type(json_service, tmpdi
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,
@@ -7089,7 +7089,7 @@ def test_mandatory_array_date_time_parameter_with_wrong_type_in_array(
     )
 
     today_date = datetime.date.today()
-    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.now()
     assert generated_functions.json_get_all_parameters_types(
         query_integer=0,
         query_integer32=0,

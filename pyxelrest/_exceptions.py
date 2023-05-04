@@ -6,7 +6,7 @@ class InvalidOpenAPIDefinition(PyxelRestException):
     """ Invalid OpenAPI Definition. """
 
     def __init__(self, message: str, *args, **kwargs):  # real signature unknown
-        PyxelRestException.__init__(self, "Invalid Definition: " + message)
+        PyxelRestException.__init__(self, f"Invalid Definition: {message}")
 
 
 class OpenAPIVersionNotProvided(InvalidOpenAPIDefinition):

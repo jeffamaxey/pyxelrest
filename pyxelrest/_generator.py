@@ -33,13 +33,11 @@ def load_services(config: dict) -> List[Service]:
     """
     loaded_services = []
     for name, settings in config.items():
-        if "pyxelrest" == name:
+        if name == "pyxelrest":
             pyxelrest_service = PyxelRest(settings)
             loaded_services.append(pyxelrest_service)
-        else:
-            service = load_service(name, settings)
-            if service:
-                loaded_services.append(service)
+        elif service := load_service(name, settings):
+            loaded_services.append(service)
 
     check_for_duplicates(loaded_services)
     return loaded_services
