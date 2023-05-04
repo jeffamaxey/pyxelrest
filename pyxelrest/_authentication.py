@@ -28,7 +28,7 @@ def _create_authentication(
     open_api_security_definition: dict,
 ):
     service_config = service.config.auth
-    if "oauth2" == open_api_security_definition.get("type"):
+    if open_api_security_definition.get("type") == "oauth2":
         flow = open_api_security_definition.get("flow")
         oauth2_config = dict(service_config.get("oauth2", {}))
         if flow == "implicit":
@@ -71,7 +71,7 @@ def _create_authentication(
 
             return OAuth2ClientCredentials(token_url=token_url, **oauth2_config)
         raise Exception(f"Unexpected OAuth2 flow: {open_api_security_definition}")
-    elif "apiKey" == open_api_security_definition.get("type"):
+    elif open_api_security_definition.get("type") == "apiKey":
         if open_api_security_definition["in"] == "query":
             return QueryApiKey(
                 service_config.get("api_key"),
@@ -81,7 +81,7 @@ def _create_authentication(
             service_config.get("api_key"),
             open_api_security_definition["name"],
         )
-    elif "basic" == open_api_security_definition.get("type"):
+    elif open_api_security_definition.get("type") == "basic":
         return Basic(
             service_config.get("basic", {}).get("username"),
             service_config.get("basic", {}).get("password"),
@@ -94,43 +94,47 @@ def _create_authentication(
 def _create_authentication_from_config(
     service_config: dict, authentication_mode: str, authentication: dict
 ):
-    if "oauth2" == authentication_mode:
-        oauth2_config = dict(service_config.get("oauth2", {}))
-        for flow, authentication in authentication.items():
-            if "implicit" == flow:
-                return OAuth2Implicit(
-                    authorization_url=authentication.get("authorization_url"),
-                    **oauth2_config,
-                )
-            elif "access_code" == flow:
-                return OAuth2AuthorizationCode(
-                    authorization_url=authentication.get("authorization_url"),
-                    token_url=authentication.get("token_url"),
-                    **oauth2_config,
-                )
-            elif "password" == flow:
-                return OAuth2ResourceOwnerPasswordCredentials(
-                    token_url=authentication.get("token_url"), **oauth2_config
-                )
-            elif "application" == flow:
-                return OAuth2ClientCredentials(
-                    token_url=authentication.get("token_url"), **oauth2_config
-                )
-            raise Exception(f"Unexpected OAuth2 flow: {flow}")
-    elif "api_key" == authentication_mode:
-        if "query_parameter_name" in authentication:
-            return QueryApiKey(
-                service_config.get("api_key"), authentication["query_parameter_name"]
+    if authentication_mode == "api_key":
+        return (
+            QueryApiKey(
+                service_config.get("api_key"),
+                authentication["query_parameter_name"],
             )
-        return HeaderApiKey(
-            service_config.get("api_key"), authentication.get("header_name")
+            if "query_parameter_name" in authentication
+            else HeaderApiKey(
+                service_config.get("api_key"),
+                authentication.get("header_name"),
+            )
         )
-    elif "basic" == authentication_mode:
+    elif authentication_mode == "basic":
         return Basic(
             service_config.get("basic", {}).get("username"),
             service_config.get("basic", {}).get("password"),
         )
 
+    elif authentication_mode == "oauth2":
+        oauth2_config = dict(service_config.get("oauth2", {}))
+        for flow, authentication in authentication.items():
+            if flow == "access_code":
+                return OAuth2AuthorizationCode(
+                    authorization_url=authentication.get("authorization_url"),
+                    token_url=authentication.get("token_url"),
+                    **oauth2_config,
+                )
+            elif flow == "application":
+                return OAuth2ClientCredentials(
+                    token_url=authentication.get("token_url"), **oauth2_config
+                )
+            elif flow == "implicit":
+                return OAuth2Implicit(
+                    authorization_url=authentication.get("authorization_url"),
+                    **oauth2_config,
+                )
+            elif flow == "password":
+                return OAuth2ResourceOwnerPasswordCredentials(
+                    token_url=authentication.get("token_url"), **oauth2_config
+                )
+            raise Exception(f"Unexpected OAuth2 flow: {flow}")
     raise Exception(f"Unexpected security definition type: {authentication_mode}")
 
 

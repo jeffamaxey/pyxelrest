@@ -91,10 +91,7 @@ class CheckIntervalParameter(UDFParameter):
         return value
 
     def validate_optional(self, value: Any, request_content: RequestContent):
-        if value is not None:
-            value = self._convert_to_int(value)
-        else:
-            value = 30
+        value = self._convert_to_int(value) if value is not None else 30
         request_content.add_value(self, value)
 
 
@@ -145,12 +142,13 @@ class BodyParameter(UDFParameter):
 
     @staticmethod
     def list_as_json(lists: list, parse_as: str) -> Union[list, dict]:
-        if "dict" == parse_as:
+        if parse_as == "dict":
             if len(lists) != 2:
                 raise Exception("There should be only two rows. Header and values.")
-            return list_to_dict(lists[0], lists[1])
+            else:
+                return list_to_dict(lists[0], lists[1])
 
-        if "dict_list" == parse_as:
+        elif parse_as == "dict_list":
             if len(lists) < 2:
                 raise Exception(
                     "There should be at least two rows. Header and first dictionary values."
@@ -190,7 +188,7 @@ class SecurityDefinitionsParameter(UDFParameter):
             required=False,
             field_type="array",
         )
-        self.description = f"Authentication mechanisms to use."
+        self.description = "Authentication mechanisms to use."
 
     def _convert_to_array(self, value: Any) -> List[dict]:
         if not isinstance(value, list):

@@ -163,4 +163,6 @@ keywords = [
     "xor",
 ]
 
-vba_restricted_keywords = {keyword: keyword + "_visual_basic" for keyword in keywords}
+vba_restricted_keywords = {
+    keyword: f"{keyword}_visual_basic" for keyword in keywords
+}

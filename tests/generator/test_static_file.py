@@ -105,7 +105,7 @@ def test_get_static_open_api_definition_relative_path(
         tmpdir,
         {
             "open_api_definition_loaded_from_file": {
-                "open_api": {"definition": f"file:///ko_existing_file.json"},
+                "open_api": {"definition": "file:///ko_existing_file.json"},
                 "formulas": {"dynamic_array": {"lock_excel": True}},
             }
         },

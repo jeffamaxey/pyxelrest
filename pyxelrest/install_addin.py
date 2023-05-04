@@ -59,10 +59,9 @@ class VSTOManager:
                 f"PyxelRest Microsoft Excel add-in cannot be found in {vsto_file_path}."
             )
         self._clear_click_once_cache()
-        failed_silent_install = subprocess.call(
+        if failed_silent_install := subprocess.call(
             [self.vsto_installer_path, "/Silent", "/Install", vsto_file_path]
-        )
-        if failed_silent_install:
+        ):
             logger.warning(
                 f"Silent add-in installation failed (returned {failed_silent_install}). Try non-silent installation..."
             )
@@ -75,11 +74,9 @@ class VSTOManager:
         vsto_file_path = VSTOManager.get_vsto_file_path(add_in_folder)
         if os.path.isfile(vsto_file_path):
             logger.info("Try to uninstall Microsoft Excel add-in...")
-            # Check result of uninstall as failed uninstall should never occurs
-            failed_silent_uninstall = subprocess.call(
+            if failed_silent_uninstall := subprocess.call(
                 [self.vsto_installer_path, "/Silent", "/Uninstall", vsto_file_path]
-            )
-            if failed_silent_uninstall:
+            ):
                 logger.warning(
                     f"Silent add-in uninstallation failed (returned {failed_silent_uninstall}). Try non-silent uninstallation..."
                 )
@@ -137,12 +134,13 @@ def create_xlwings_config(xlwings_config_folder: str) -> str:
             for line in original_xlwings_file:
                 previous_function = current_function
                 current_function = _function_or_sub_name(line, current_function)
-                if current_function == "GetConfig":
-                    # If this is the definition of GetConfig function
-                    if previous_function != current_function:
-                        add_in_file.write(line)
-                        add_in_file.write(
-                            f"""    Dim configValue As String
+                if (
+                    current_function == "GetConfig"
+                    and previous_function != current_function
+                ):
+                    add_in_file.write(line)
+                    add_in_file.write(
+                        f"""    Dim configValue As String
 
     If Application.Name = "Microsoft Excel" Then
         If configKey = "INTERPRETER_WIN" Then
@@ -156,39 +154,36 @@ def create_xlwings_config(xlwings_config_folder: str) -> str:
         GetConfig = default
     End If
 """
-                        )
-                    else:
-                        # Skip the xlwings content of GetConfig function as it is replaced
-                        pass
-                elif current_function in (
-                    "ImportPythonUDFsBase",
-                    "ImportXlwingsUdfsModule",
+                    )
+                elif current_function == "GetConfig":
+                    pass
+                elif (
+                    current_function
+                    in (
+                        "ImportPythonUDFsBase",
+                        "ImportXlwingsUdfsModule",
+                    )
+                    or "ThisWorkbook" not in line
                 ):
                     # Keep referring to ThisWorkbook for pyxelrest
                     add_in_file.write(line)
-                elif "ThisWorkbook" in line:
+                else:
                     # Allow users to use xlwings with workbooks
                     add_in_file.write(line.replace("ThisWorkbook", "ActiveWorkbook"))
-                else:
-                    add_in_file.write(line)
     logger.info("XLWings PyxelRest VB add-in created.")
     return xlwings_bas_path
 
 
 def _function_or_sub_name(line: str, previous_function_name: str) -> Optional[str]:
     # End of previous function
-    if line in ("End Function\n", "End Sub\n"):
+    if line in {"End Function\n", "End Sub\n"}:
         return
 
-    # Start of a new function
-    function_definition_match = re.match(r"^Function (.*)\(.*$", line)
-    if function_definition_match:
-        return function_definition_match.group(1)
+    if function_definition_match := re.match(r"^Function (.*)\(.*$", line):
+        return function_definition_match[1]
 
-    # Start of a new sub
-    sub_definition_match = re.match(r"^Sub (.*)\(.*$", line)
-    if sub_definition_match:
-        return sub_definition_match.group(1)
+    if sub_definition_match := re.match(r"^Sub (.*)\(.*$", line):
+        return sub_definition_match[1]
 
     # Not a new function
     return previous_function_name

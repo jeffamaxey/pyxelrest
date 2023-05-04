@@ -15,8 +15,8 @@ def to_date_time(value: str) -> Union[str, datetime.datetime, datetime.date]:
     :return: date or datetime instance or original string if conversion failed
     """
     # dateutil does not handle lower cased timezone
-    if value[-1:] == "z":
-        value = value[:-1] + "Z"
+    if value.endswith("z"):
+        value = f"{value[:-1]}Z"
 
     try:
         dt = dateutil.parser.parse(value)
@@ -31,10 +31,7 @@ def to_date_time(value: str) -> Union[str, datetime.datetime, datetime.date]:
             return dt
 
         # Conversion cannot be performed for dates <= to 1970-01-01 best effort and return in provided timezone
-        if dt.year < 1971:
-            return dt
-
-        return dt.astimezone(tz=dateutil.tz.tzlocal())
+        return dt if dt.year < 1971 else dt.astimezone(tz=dateutil.tz.tzlocal())
     except dateutil.parser.ParserError:
         logger.warning(
             f"{value} cannot be converted to a date-time. Returning value as is."
@@ -117,20 +114,19 @@ class Flattenizer:
         if value is None or value == [] or value == {}:
             self._add_level_headers(level, header)
             self._level_values(row, level).append("")
+        elif isinstance(value, dict):
+            self._set_values_per_level_for_dict(
+                row, level, value, column_index, json_definition
+            )
+        elif isinstance(value, list):
+            self._set_values_per_level_for_list(
+                row, level, header, value, column_index, json_definition
+            )
         else:
-            if isinstance(value, dict):
-                self._set_values_per_level_for_dict(
-                    row, level, value, column_index, json_definition
-                )
-            elif isinstance(value, list):
-                self._set_values_per_level_for_list(
-                    row, level, header, value, column_index, json_definition
-                )
-            else:
-                self._add_level_headers(level, header)
-                self._level_values(row, level).append(
-                    convert_simple_type(value, json_definition)
-                )
+            self._add_level_headers(level, header)
+            self._level_values(row, level).append(
+                convert_simple_type(value, json_definition)
+            )
 
     def _level_values(self, row: int, level: int) -> List[Any]:
         if row >= len(self.__values_per_level):
@@ -148,8 +144,7 @@ class Flattenizer:
         """
         For a dict, each value is set on the current row and level.
         """
-        ref = json_definition.get("$ref")
-        if ref:
+        if ref := json_definition.get("$ref"):
             ref = ref[len("#/definitions/") :]
             json_definition = self.json_definitions.get(ref)
             properties = json_definition.get("properties")
@@ -270,6 +265,4 @@ class Flattenizer:
 
 
 def response(status_code: int, responses: dict):
-    if str(status_code) in responses:
-        return responses[str(status_code)]
-    return responses.get("default")
+    return responses.get(str(status_code), responses.get("default"))
